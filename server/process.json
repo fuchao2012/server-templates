@@ -1,0 +1,8 @@
+{
+    "apps": [{
+        "name": "eagle-template",
+        "script": "/home/webedit/app/tiger/tiger-template/src/index.js",
+        "merge_logs": true,
+        "exec_mode": "cluster"
+    }]
+}

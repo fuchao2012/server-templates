@@ -1,0 +1,11 @@
+<div class="modal-header">
+    <a class="modal-close" (click)="dismiss()"></a>
+    <span class="modal-title">确定要锁定用户吗？</span>
+</div>
+<div class="modal-body">
+    {{user | json}}
+</div>
+<div class="modal-footer">
+    <shark-button [type]="'secondary'" (click)="dismiss()">取消</shark-button>
+    <shark-button (click)="ok()">确定</shark-button>
+</div>

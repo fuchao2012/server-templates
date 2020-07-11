@@ -1,0 +1,62 @@
+<div class="section">
+    <div class="section-block">
+        <shark-breadcrumb>
+            <shark-breadcrumb-item>
+                用户列表
+            </shark-breadcrumb-item>
+        </shark-breadcrumb>
+    </div>
+</div>
+<div class="section">
+    <div class="section-block">
+        <form class="form">
+            <div class="form-item-group">
+                <div class="form-item col-8">
+                    <label class="form-item-label col-6">关键字：</label>
+                    <div class="form-item-control col-18">
+                        <shark-input name="key" [(ngModel)]="formData.key" (keydown.enter)="search()" [size]="'lg'">
+                        </shark-input>
+                    </div>
+                </div>
+            </div>
+            <div class="form-item-group">
+                <div class="form-item col-24">
+                    <shark-button (click)="search()">搜索</shark-button>
+                    <shark-button class="margin-l-2x" (click)="add()">新建</shark-button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="section-block">
+        <div class="table-wrap">
+            <table class="table table-full">
+                <thead>
+                    <tr>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>手机号</th>
+                        <th style="width:180px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of itemList">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.phone}}</td>
+                        <td class="table-operation">
+                            <shark-button [type]="'link'" (click)="lock(item)">锁定</shark-button>
+                            <shark-button [type]="'link'" (click)="detail(item)">详情</shark-button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="!itemList || itemList.length===0" class="text-center">
+                        <td colspan=4>当前条件下没有数据</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="clearfix padding-t-20 text-right">
+            <shark-pagination [page]="pagination.page" [totalPage]="pagination.totalPage" [pageSize]="pagination.size"
+                (onSizeChanged)="onSizeChanged($event);" (onPageChanged)="onPageChanged($event);"></shark-pagination>
+        </div>
+    </div>
+</div>

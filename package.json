@@ -1,0 +1,35 @@
+{
+    "name": "@eagle/eagle-template",
+    "version": "1.3.2",
+    "description": "node server & web dev template",
+    "keywords": [
+        "node",
+        "koa",
+        "angularx",
+        "framework",
+        "front-end",
+        "web"
+    ],
+    "scripts": {
+        "install": "sh scripts/install.sh",
+        "dev": "cd web && npm run dev",
+        "server": "cd server && npm run server",
+        "dev:server": "cd server/dist && node src/index.js",
+        "build": "sh scripts/build.sh",
+        "web:build": "cd web && npm run build",
+        "server:build": "cd server && npm run build",
+        "build:test": "sh scripts/build-test.sh",
+        "web:build:test": "cd web && npm run build:test",
+        "server:build:test": "cd server && npm run build:test",
+        "build:online": "sh scripts/build-online.sh",
+        "web:build:online": "cd web && npm run build:online",
+        "server:build:online": "cd server && npm run build:online",
+        "clean": "sh scripts/clean.sh"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://git.mail.netease.com/eagle/eagle-template"
+    },
+    "license": "LGPL",
+    "author": "the ntesmail authors"
+}

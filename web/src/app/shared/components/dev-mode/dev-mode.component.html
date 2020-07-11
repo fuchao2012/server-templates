@@ -1,0 +1,2 @@
+<i class="icon-setting" *ngIf="mode === 'local'" shark-tooltip [template]="'当前本地mock模式，点击切换为remote联调模式'" (click)="toggle()"></i>
+<i class="icon-setting" *ngIf="mode === 'remote'" shark-tooltip [template]="'当前remote联调模式，点击切换为本地mock模式'" (click)="toggle()"></i>

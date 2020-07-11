@@ -1,0 +1,148 @@
+variables:
+  SERVICE_CODE: ${your-serviceCode}
+  REPOSITORY_URL: $HARBOR_URL/$HARBOR_APP_DIRECTOR/$SERVICE_CODE
+  OPERA_ARGS: '--buildId=$CI_JOB_ID
+            --projectName=$CI_PROJECT_NAME
+            --projectId=$CI_PROJECT_ID
+            --projectNamespace=$CI_PROJECT_NAMESPACE
+            --serviceCode=$SERVICE_CODE
+            --commitId=$CI_COMMIT_SHA
+            --branch=$CI_COMMIT_REF_NAME
+            --pipelineId=$CI_PIPELINE_ID
+            --userName=$GITLAB_USER_NAME
+            --userEmail=$GITLAB_USER_EMAIL'
+
+stages:
+  - package
+  - upload-artifacts
+  - upload-image
+
+cache:
+  paths:
+    - server/node_modules/
+    - web/node_modules/
+
+
+################################
+#    前置检查
+################################
+before_script:
+  - preCheck
+
+################################
+#    编译打包(test)
+################################
+package-fed-test:
+  stage: package
+  script:
+    - pwd
+    - sh scripts/install-ci.sh
+    - npm run build:test
+    - cp -r deploy/env/setenv_test.sh  dist/setenv.sh
+    - cd dist && zip -r ../$CI_PROJECT_NAME.zip ./*
+  tags:
+    - ci-front
+  artifacts:
+    paths:
+      - $CI_PROJECT_NAME.zip
+    expire_in: 1d
+  only:
+    - dev
+    - /^test-.*/
+    - /^feature-.*/
+
+################################
+#    编译打包(online)
+################################
+package-fed-online:
+  stage: package
+  script:
+    - pwd
+    - sh scripts/install-ci.sh
+    - npm run build:online
+    - cp -r deploy/env/setenv_online.sh  dist/setenv.sh
+    - cd dist && zip -r ../$CI_PROJECT_NAME.zip ./*
+  tags:
+    - ci-front
+  artifacts:
+    paths:
+      - $CI_PROJECT_NAME.zip
+    expire_in: 1d
+  only:
+    - master
+
+################################
+# 测试服上传代码制品  --autoDeploy=true
+################################
+upload_artifacts-test:
+  stage: upload-artifacts
+  script:
+    - pwd
+    - opera_truck_agent truck $OPERA_ARGS --env=test --artifactPath=$CI_PROJECT_NAME.zip  
+  tags:
+    - ci-front
+  only:
+    - dev
+    - /^test-.*/
+    - /^feature-.*/
+  dependencies:
+    - package-fed-test
+
+
+################################
+# 线上传代码制品
+################################
+upload_artifacts-online:
+  stage: upload-artifacts
+  script:
+    - pwd
+    - opera_truck_agent truck $OPERA_ARGS --env=online --artifactPath=$CI_PROJECT_NAME.zip 
+  tags:
+    - ci-front
+  only:
+    - master
+  dependencies:
+    - package-fed-online
+
+################################
+# 测试环境镜像制品构建、上传及自动发布 --  --autoDeploy=true --clusterId=2 --ldcCode=ldc-hz-bgp-test		
+################################
+test_image_upload:
+  stage: upload-image
+  script:
+    - CURRENT_TIMESTAMP=`date --date='0 days ago' '+%Y%m%d-%H%M%S-%N' | cut -b 1-19`
+    - PROJECT_VERSION="1.0.1"
+    - IMAGE_TAG="${PROJECT_VERSION}-${CI_COMMIT_REF_NAME##*/}-${CURRENT_TIMESTAMP}-${CI_PIPELINE_ID}"
+    - IMAGE_NAME="${REPOSITORY_URL}:${IMAGE_TAG}"
+    - rm -rf target && mkdir target && unzip $CI_PROJECT_NAME.zip -d target && mv target/setenv.sh .
+    - docker build --pull -t ${IMAGE_NAME}  .
+    - operaAgent docker $OPERA_ARGS --env=test --imageName=${IMAGE_NAME} --imageTag=${IMAGE_TAG} 
+  tags:
+    - ci-front
+  only:
+    - dev
+    - /^test-.*/
+    - /^feature-.*/
+  dependencies:
+    - package-fed-test
+
+
+################################
+#    线上环境镜像制品构建及上传
+################################
+online_image_upload:
+  stage: upload-image
+  script:
+    - CURRENT_TIMESTAMP=`date --date='0 days ago' '+%Y%m%d-%H%M%S-%N' | cut -b 1-19`
+    - PROJECT_VERSION="1.0.2"
+    - IMAGE_TAG="${PROJECT_VERSION}-${CI_COMMIT_REF_NAME##*/}-${CURRENT_TIMESTAMP}-${CI_PIPELINE_ID}"
+    - IMAGE_NAME="${REPOSITORY_URL}:${IMAGE_TAG}"
+    - rm -rf target && mkdir target && unzip $CI_PROJECT_NAME.zip -d target && mv target/setenv.sh .
+    - docker build --pull -t ${IMAGE_NAME}  .
+    - operaAgent docker $OPERA_ARGS --env=online --imageName=${IMAGE_NAME} --imageTag=${IMAGE_TAG}
+  tags:
+    - ci-front
+  only:
+    - master
+  dependencies:
+    - package-fed-online

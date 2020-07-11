@@ -1,0 +1,53 @@
+<div class="layout">
+    <div class="layout-header">
+        <a class="layout-header-logo" href="#">
+            <img src="http://mailshark.nos-jd.163yun.com/static/yx-logo.svg" />
+        </a>
+        <div class="layout-header-product-name">
+            模板工程
+            <dev-mode></dev-mode>
+        </div>
+        <div class="layout-header-user-info" shark-toggle-element [target]="'#logout'">
+            <div class="layout-header-user-name">欢迎你，{{ user?.fullname }}</div>
+            <div class="layout-header-arrow-btn"></div>
+        </div>
+        <ul class="layout-header-info-dropdown" id="logout">
+            <li>
+                <span class="layout-header-info-dropdown-item" (click)="goLogout()">退出</span>
+            </li>
+        </ul>
+    </div>
+    <div class="layout-body scroll-parent layout-single layout-title-icon">
+        <div class="layout-aside" shark-menu>
+            <ul class="menu">
+                <li>
+                    <div class="menu-title">
+                        <span>
+                            <i class="icon-home"></i>我的模块
+                        </span>
+                    </div>
+                    <ul class="menu-content menu-content-vertical">
+                        <li class="menu-nav">
+                            <a class="menu-nav-btn" [routerLink]="'/home'" [exRouterActive]="'/home'">首页</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="menu-title">
+                        <span>
+                            <i class="icon-user"></i>用户管理
+                        </span>
+                    </div>
+                    <ul class="menu-content menu-content-vertical">
+                        <li class="menu-nav">
+                            <a class="menu-nav-btn" [routerLink]="'/user-list'" [exRouterActive]="'/user-list'">列表</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="layout-main">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

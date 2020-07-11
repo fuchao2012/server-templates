@@ -1,0 +1,22 @@
+{
+    "code": 200,
+    "data": {
+        "pagination": {
+            "page": 1,
+            "size": 10,
+            "totalPage": 5,
+            "total": 55
+        },
+        "result": [
+            {
+                "id": "100",
+                "name": "小明"
+            },
+            {
+                "id": "200",
+                "name": "小虹"
+            }
+        ]
+    },
+    "message": ""
+}

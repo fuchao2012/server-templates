@@ -1,0 +1,44 @@
+stages:
+  - package
+  - test
+
+# 缓存，如果服务器上面需要更新这个node_modules，则需要把key这一项先注释一下，否则不会更新node_modules
+cache:
+  key: "$CI_PROJECT_NAME"
+  paths:
+    - node_modules/
+
+# 编译前端
+package-fed:
+  stage: package
+  script:
+    - pwd
+    - npm i --registry http://npm.hz.infra.mail/registry/
+    - npm run build:test $CI_BUILD_REF_NAME
+  tags:
+    - docker-runner
+  only:
+    - master
+    - dev
+  except:
+    - web
+
+# 编译前端
+package-master-fed:
+  stage: package
+  script:
+    - pwd
+    - npm i --registry http://npm.hz.infra.mail/registry/
+    - npm run build:online
+  tags:
+    - docker-runner
+  only:
+    - web
+
+# 给工程做单元测试
+test-fed:
+  stage: test
+  script:
+    - echo "test"
+  tags:
+    - docker-runner

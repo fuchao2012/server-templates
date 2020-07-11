@@ -1,0 +1,9 @@
+server/node_modules/*
+server/dist/*
+server/log/*
+web/node_modules/*
+web/build/*
+dist/*
+
+!.gitlab-ci.yml
+!.editorconfig

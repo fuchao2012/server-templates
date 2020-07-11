@@ -1,0 +1,34 @@
+<div class="section">
+    <div class="section-block">
+        <shark-breadcrumb>
+            <shark-breadcrumb-item>
+                <a routerLink="/user-list">用户列表</a>
+            </shark-breadcrumb-item>
+            <shark-breadcrumb-item>
+                用户详情
+            </shark-breadcrumb-item>
+        </shark-breadcrumb>
+    </div>
+</div>
+<ex-section [head]="'基本信息'" [foldAble]="false">
+    <form class="form" shark-validform #form="shark-validform">
+        <div class="form-item">
+            <span class="form-item-label col-4"><span class="text-error">*</span>用户名称：</span>
+            <div class="form-item-control col-20">
+                <shark-input name="name" [(ngModel)]="formData.name" [size]="'lg'" shark-valid [validRule]="'required'">
+                </shark-input>
+            </div>
+        </div>
+        <div class="form-item">
+            <span class="form-item-label col-4">手机号码：</span>
+            <div class="form-item-control col-20">
+                <shark-input name="phone" [(ngModel)]="formData.phone" [size]="'lg'">
+                </shark-input>
+            </div>
+        </div>
+        <div class="form-item">
+            <shark-button class="col-offset-2" (click)="save(form)">保存</shark-button>
+            <span class="text-primary margin-l-2x">用户名必填。</span>
+        </div>
+    </form>
+</ex-section>
